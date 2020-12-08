@@ -1,0 +1,17 @@
+{
+  "packages": ["packages/*", "example"],
+  "version": "independent",
+  "command": {
+    "bootstrap": {
+      "hoist": true,
+      "npmClientArgs": ["--no-package-lock"]
+    },
+    "version": {
+      "allowBranch": ["master", "feat/*"]
+    },
+    "publish": {
+      "allowBranch": "master",
+      "ignoreChanges": ["*.md"]
+    }
+  }
+}

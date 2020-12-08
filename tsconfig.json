@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "esnext",
+    "strict": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {},
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "types": ["node", "reflect-metadata"],
+    "noImplicitAny": false,
+    "incremental": true
+  },
+  "exclude": ["node_modules", "dist"]
+}
