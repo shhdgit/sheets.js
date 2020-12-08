@@ -13,7 +13,7 @@
 * [x] sort
 * [ ] formula, reactive data
 * [ ] vue wrapper
-* [ ] demo
+* [x] demo
 * [ ] api docs
 * [ ] CI/CD
 * [ ] refactor
