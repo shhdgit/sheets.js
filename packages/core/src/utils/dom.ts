@@ -20,3 +20,59 @@ export function insert(child: HTMLElement, parent: HTMLElement, anchor?: HTMLEle
 export function setElementText(el: HTMLElement, text: string) {
   el.textContent = text;
 }
+
+export function addCssClass(element: HTMLElement, className: string) {
+  if (!element || !className || className.length === 0) {
+    return;
+  }
+
+  if (className.indexOf(' ') >= 0) {
+    className.split(' ').forEach((value) => addCssClass(element, value));
+    return;
+  }
+
+  if (element.classList) {
+    element.classList.add(className);
+  } else if (element.className && element.className.length > 0) {
+    const cssClasses = element.className.split(' ');
+
+    if (cssClasses.indexOf(className) < 0) {
+      cssClasses.push(className);
+      element.setAttribute('class', cssClasses.join(' '));
+    }
+  } else {
+    element.setAttribute('class', className);
+  }
+
+  return element;
+}
+
+export function removeCssClass(element: HTMLElement, className: string) {
+  if (!element || !className || className.length === 0) {
+    return;
+  }
+
+  if (className.indexOf(' ') >= 0) {
+    className.split(' ').forEach((value) => removeCssClass(element, value));
+    return;
+  }
+
+  if (element.classList) {
+    element.classList.remove(className);
+  } else if (element.className && element.className.length > 0) {
+    const newClassName = element.className
+      .split(' ')
+      .filter((c) => c !== className)
+      .join(' ');
+
+    element.setAttribute('class', newClassName);
+  }
+}
+
+export function addOrRemoveCssClass(element: HTMLElement, className: string, addOrRemove: boolean) {
+  if (addOrRemove) {
+    addCssClass(element, className);
+  } else {
+    removeCssClass(element, className);
+  }
+}

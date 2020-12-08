@@ -2,6 +2,7 @@ import { InjectionToken, interfaces } from './di';
 import { Component } from './component';
 
 export type IndexValue = { value: number };
+export type CellValue = { value: string | number | null };
 
 export const ROW_NODE_TOKEN = InjectionToken<interfaces.Newable<IRowNode>>('row node');
 export const ROW_NODE_FACTORY_TOKEN = InjectionToken<IRowNodeFactory>('row node factory');
@@ -30,8 +31,10 @@ export interface IColumnFactory {
 
 export const CELL_NODE_TOKEN = InjectionToken<ICellNode>('cell node token');
 export interface ICellNode extends Component {
+  data: CellValue;
   options: ICellOptions;
-  update(data: any): void;
+
+  update(data: CellValue): void;
 }
 export interface ICellOptions {
   rowIndex: IndexValue;

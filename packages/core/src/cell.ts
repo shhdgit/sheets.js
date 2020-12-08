@@ -1,5 +1,5 @@
 import { Component } from './component';
-import { ICellNode, ICellOptions } from './interface';
+import { CellValue, ICellNode, ICellOptions } from './interface';
 import { setElementText } from './utils';
 
 export class CellNode extends Component implements ICellNode {
@@ -7,31 +7,25 @@ export class CellNode extends Component implements ICellNode {
     return `<div class="sheetsjs-cell"></div>`;
   }
 
-  private data: string | number = '';
+  public data: CellValue;
 
-  constructor(parent: Component, public options: ICellOptions, defaultValue = '') {
+  constructor(parent: Component, public options: ICellOptions, defaultValue: CellValue = { value: null }) {
     super(parent, CellNode.getTemplate());
     this.data = defaultValue;
+    (this.containerRef as any).__cellComponent = this;
   }
 
   public render() {
-    if (!this.parent) {
-      return;
-    }
-    setElementText(this.containerRef, String(this.data));
+    const data = this.data.value !== null ? this.data.value : '';
+    setElementText(this.containerRef, String(data));
     return this.containerRef;
   }
 
   public remove() {
-    this.unbindEvents();
     super.remove();
   }
 
-  public update(data: string | number) {
+  public update(data: CellValue) {
     this.data = data;
   }
-
-  private bindEvents() {}
-
-  private unbindEvents() {}
 }

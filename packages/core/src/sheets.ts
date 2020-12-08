@@ -2,6 +2,8 @@ import { container as DIContainer } from './di';
 import { CellNode } from './cell';
 import { Component } from './component';
 import { ROW_NODE_FACTORY_TOKEN, IRowNode, COLUMN_FACTORY_TOKEN, IColumn, ICellNode, IndexValue } from './interface';
+import { addEventListener, getCellForEvent } from './utils/event';
+import { addCssClass, removeCssClass } from './utils';
 
 interface SheetsOptions {
   container: string | HTMLElement;
@@ -9,11 +11,10 @@ interface SheetsOptions {
   column: number;
 }
 
-type Value = { value: any } | undefined;
 /**
  * type DOKMatrixItem = [row, column, value]
  */
-type DOKMatrixItem = [number, number, Value];
+type DOKMatrixItem = [number, number, string | number | null];
 
 const defaultOptions: SheetsOptions = {
   container: '',
@@ -62,8 +63,8 @@ export class Sheets extends Component {
     this.setup();
   }
 
-  public render(): undefined | HTMLElement {
-    // this.append(, 'ruler');
+  public render() {
+    // this.append(, 'rx`uler');
     return super.render();
   }
 
@@ -167,7 +168,7 @@ export class Sheets extends Component {
     this.rows.forEach((row) => {
       const rowRst: (string | number)[] = [];
       rst.push(rowRst);
-      row.children.forEach((cell) => rowRst.push(cell.data));
+      row.children.forEach((cell) => rowRst.push(cell.data.value));
     });
     return rst;
   }
@@ -183,7 +184,7 @@ export class Sheets extends Component {
       const colIndex = v[1];
       const data = v[2];
       const cell = this.getCell(rowIndex, colIndex);
-      cell.update(data);
+      cell.update({ value: data });
       cell.render();
     });
   }
@@ -191,7 +192,7 @@ export class Sheets extends Component {
   public resetValue() {
     this.rows.forEach((row) =>
       row.children.forEach((cell: ICellNode) => {
-        cell.update('');
+        cell.update({ value: null });
         cell.render();
       }),
     );
@@ -200,6 +201,7 @@ export class Sheets extends Component {
   private setup() {
     this.setupRowsAndColumns();
     this.setupCells();
+    this.setupEvents();
   }
 
   private setupRowsAndColumns() {
@@ -228,5 +230,29 @@ export class Sheets extends Component {
       rowNode.push(cell);
       columnController.push(cell);
     }
+  }
+
+  private setupEvents() {
+    // single selection
+    const SELECTED_CLASS = 'sheetsjs-cell-selected';
+    let selectedCell: ICellNode | null;
+    this.addEvent('click', (e) => {
+      if (selectedCell) {
+        removeCssClass(selectedCell.containerRef, SELECTED_CLASS);
+      }
+
+      selectedCell = getCellForEvent(e);
+      if (selectedCell) {
+        addCssClass(selectedCell.containerRef, SELECTED_CLASS);
+      }
+      // TODO: emit sheets custom event
+    });
+
+    // edit cell
+    this.addEvent('dblclick', (e) => {
+      const currentCell = getCellForEvent(e);
+      console.log(currentCell);
+      // TODO: emit sheets custom event
+    });
   }
 }

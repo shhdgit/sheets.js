@@ -6,19 +6,22 @@
 
 * [ ] spreadsheet container
   * [ ] row & column ruler
-  * [ ] selection area
+  * [x] selection area
   * [ ] editable
 * [x] data structure design
 * [x] insert column & row
 * [x] sort
 * [ ] formula, reactive data
-* [ ] api docs / redesign
-* [ ] CI/CD
+* [ ] vue wrapper
 * [ ] demo
+* [ ] api docs
+* [ ] CI/CD
+* [ ] refactor
 
 ### TODO
 
 * [ ] spreadsheet container
+  * [ ] resize
   * [ ] standalone renderer
   * [ ] canvas container
 * [ ] @sheets/core UT

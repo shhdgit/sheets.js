@@ -1,7 +1,11 @@
-import { insert, loadTemplate, remove } from './utils';
+import { insert, loadTemplate, remove, addEventListener, removeEventListener } from './utils';
 
 const REF_ATTR = 'xs-ref';
 const DEFAULT_CHILDREN_REF = 'children';
+
+interface Listener {
+  (event?: any): void;
+}
 
 export class Component {
   public children: Component[] = [];
@@ -9,6 +13,7 @@ export class Component {
   // wrapper element
   public containerRef!: HTMLElement;
   public childrenRef!: HTMLElement;
+  public listeners: [string, Listener][] = [];
 
   constructor(protected parent: Component | null = null, template?: string) {
     if (template) {
@@ -26,10 +31,6 @@ export class Component {
 
   // default render
   public render() {
-    if (!this.parent) {
-      return;
-    }
-
     // remove children, then rerender
     const childrenRef = this.getChildrenRef();
     while (childrenRef.hasChildNodes()) {
@@ -58,7 +59,7 @@ export class Component {
 
   public setTemplate(template: string) {
     this.containerRef = loadTemplate(template);
-    (this.containerRef as any).__sComponent = this;
+    (this.containerRef as any).__defaultComponent = this;
   }
 
   public indexOf(index: number) {
@@ -82,6 +83,18 @@ export class Component {
       const index = this.parent.children.findIndex((child) => child === this);
       this.parent.children.splice(index, 1);
       remove(this.containerRef);
+    }
+  }
+
+  public addEvent(event: string, listener: Listener) {
+    this.listeners.push([event, listener]);
+    addEventListener(this.containerRef, event, listener);
+  }
+
+  public dispose() {
+    while (this.listeners.length) {
+      const l = this.listeners.pop()!;
+      removeEventListener(this.containerRef, l[0], l[1]);
     }
   }
 }
