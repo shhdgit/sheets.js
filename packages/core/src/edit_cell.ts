@@ -28,7 +28,6 @@ export class EditCell extends Component implements IEditCellNode {
   }
 
   public show(top: number, left: number) {
-    console.log(top, left);
     this.isDisplay = true;
 
     const value = this.data?.value === null ? '' : this.data?.value;

@@ -255,7 +255,6 @@ export class Sheets extends Component {
     this.addEvent('dblclick', (e) => {
       const currentCell = getCellForEvent(e);
       originEditCell = currentCell;
-      console.log(currentCell);
 
       if (currentCell?.getValue()) {
         this.editCell.setValue(currentCell.getValue());
