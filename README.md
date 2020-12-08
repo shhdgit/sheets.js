@@ -7,7 +7,7 @@
 * [ ] spreadsheet container
   * [ ] row & column ruler
   * [x] selection area
-  * [ ] editable
+  * [x] editable
 * [x] data structure design
 * [x] insert column & row
 * [x] sort
@@ -21,7 +21,7 @@
 ### TODO
 
 * [ ] spreadsheet container
-  * [ ] resize
+  * [ ] container/row/column/cell resize
   * [ ] standalone renderer
   * [ ] canvas container
 * [ ] @sheets/core UT

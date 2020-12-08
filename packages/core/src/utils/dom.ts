@@ -21,6 +21,14 @@ export function setElementText(el: HTMLElement, text: string) {
   el.textContent = text;
 }
 
+export function setInputValue(el: HTMLInputElement, val: string) {
+  el.value = val;
+}
+
+export function getInputValue(el: HTMLInputElement): string {
+  return el.value;
+}
+
 export function addCssClass(element: HTMLElement, className: string) {
   if (!element || !className || className.length === 0) {
     return;

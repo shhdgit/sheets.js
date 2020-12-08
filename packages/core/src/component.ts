@@ -46,11 +46,11 @@ export class Component {
 
   public append(child: HTMLElement, refName?: string) {
     const childrenRef = refName ? this.getRef(refName) : this.getChildrenRef();
-    childrenRef && insert(child, childrenRef);
+    childrenRef && insert(child, childrenRef as HTMLElement);
   }
 
   protected getRef(name: string) {
-    return this.containerRef.querySelector(`[${REF_ATTR}="${name}"]`) as HTMLElement;
+    return this.containerRef.querySelector(`[${REF_ATTR}="${name}"]`);
   }
 
   protected getChildrenRef() {

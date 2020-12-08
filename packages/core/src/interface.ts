@@ -31,12 +31,22 @@ export interface IColumnFactory {
 
 export const CELL_NODE_TOKEN = InjectionToken<ICellNode>('cell node token');
 export interface ICellNode extends Component {
-  data: CellValue;
   options: ICellOptions;
 
-  update(data: CellValue): void;
+  getValue(): CellValue;
+  setValue(data: CellValue): void;
 }
 export interface ICellOptions {
   rowIndex: IndexValue;
   colIndex: IndexValue;
+}
+
+export interface IEditCellNode extends Component {
+  isDisplay: boolean;
+
+  getValue(): CellValue | null;
+  setValue(data: CellValue): void;
+
+  show(top: number, left: number): void;
+  hide(): void;
 }

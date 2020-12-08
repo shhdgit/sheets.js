@@ -2,8 +2,8 @@ import { container as DIContainer } from './di';
 import { CellNode } from './cell';
 import { Component } from './component';
 import { ROW_NODE_FACTORY_TOKEN, IRowNode, COLUMN_FACTORY_TOKEN, IColumn, ICellNode, IndexValue } from './interface';
-import { addEventListener, getCellForEvent } from './utils/event';
-import { addCssClass, removeCssClass } from './utils';
+import { addCssClass, removeCssClass, getCellForEvent } from './utils';
+import { EditCell } from './edit_cell';
 
 interface SheetsOptions {
   container: string | HTMLElement;
@@ -24,13 +24,14 @@ const defaultOptions: SheetsOptions = {
 
 export class Sheets extends Component {
   static getTemplate() {
-    return `<div class="sheetsjs"><div xs-ref="ruler"></div><div xs-ref="children" class="sheetsjs-container"></div></div>`;
+    return `<div class="sheetsjs"><div xs-ref="edit-cell"></div><div xs-ref="children" class="sheetsjs-container"></div></div>`;
   }
 
   private readonly options!: SheetsOptions;
 
   private rows!: IRowNode[];
   private columns!: IColumn[];
+  private editCell = new EditCell();
 
   private rowNodeFactory = DIContainer.get(ROW_NODE_FACTORY_TOKEN);
   private columnNodeFactory = DIContainer.get(COLUMN_FACTORY_TOKEN);
@@ -64,7 +65,7 @@ export class Sheets extends Component {
   }
 
   public render() {
-    // this.append(, 'rx`uler');
+    this.append(this.editCell.containerRef, 'edit-cell');
     return super.render();
   }
 
@@ -168,12 +169,13 @@ export class Sheets extends Component {
     this.rows.forEach((row) => {
       const rowRst: (string | number)[] = [];
       rst.push(rowRst);
-      row.children.forEach((cell) => rowRst.push(cell.data.value));
+      row.children.forEach((cell) => rowRst.push(cell.getValue().value));
     });
     return rst;
   }
 
   public setValue(value: DOKMatrixItem[]) {
+    // TODO: batch render
     this.resetValue();
     this.patchValue(value);
   }
@@ -184,7 +186,7 @@ export class Sheets extends Component {
       const colIndex = v[1];
       const data = v[2];
       const cell = this.getCell(rowIndex, colIndex);
-      cell.update({ value: data });
+      cell.setValue({ value: data });
       cell.render();
     });
   }
@@ -192,7 +194,7 @@ export class Sheets extends Component {
   public resetValue() {
     this.rows.forEach((row) =>
       row.children.forEach((cell: ICellNode) => {
-        cell.update({ value: null });
+        cell.setValue({ value: null });
         cell.render();
       }),
     );
@@ -232,6 +234,7 @@ export class Sheets extends Component {
     }
   }
 
+  // TODO: emit sheets custom event
   private setupEvents() {
     // single selection
     const SELECTED_CLASS = 'sheetsjs-cell-selected';
@@ -245,14 +248,31 @@ export class Sheets extends Component {
       if (selectedCell) {
         addCssClass(selectedCell.containerRef, SELECTED_CLASS);
       }
-      // TODO: emit sheets custom event
     });
 
     // edit cell
+    let originEditCell: ICellNode | null;
     this.addEvent('dblclick', (e) => {
       const currentCell = getCellForEvent(e);
+      originEditCell = currentCell;
       console.log(currentCell);
-      // TODO: emit sheets custom event
+
+      if (currentCell?.getValue()) {
+        this.editCell.setValue(currentCell.getValue());
+      }
+      this.editCell.show(currentCell?.containerRef.offsetTop, currentCell?.containerRef.offsetLeft);
+    });
+    this.addEvent('click', (e) => {
+      const currentCell = getCellForEvent(e);
+      if (!currentCell || !this.editCell.isDisplay) {
+        return;
+      }
+
+      // save input value when hide
+      this.editCell.hide();
+      originEditCell?.setValue(this.editCell.getValue()!);
+      originEditCell?.render();
+      this.editCell.setValue(null);
     });
   }
 }

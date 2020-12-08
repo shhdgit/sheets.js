@@ -7,7 +7,7 @@ export class CellNode extends Component implements ICellNode {
     return `<div class="sheetsjs-cell"></div>`;
   }
 
-  public data: CellValue;
+  private data: CellValue;
 
   constructor(parent: Component, public options: ICellOptions, defaultValue: CellValue = { value: null }) {
     super(parent, CellNode.getTemplate());
@@ -25,7 +25,11 @@ export class CellNode extends Component implements ICellNode {
     super.remove();
   }
 
-  public update(data: CellValue) {
+  public getValue() {
+    return this.data;
+  }
+
+  public setValue(data: CellValue) {
     this.data = data;
   }
 }
