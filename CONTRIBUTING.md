@@ -1,8 +1,4 @@
-# Contributing to Pamirs
-
-Pamirs 规范
-
- - [Commit Message 规范](#commit)
+# Contributing to sheets.js
 
 ## <a name="commit"></a> Commit Message 规范（Angular Commit Message Conventions）
 
